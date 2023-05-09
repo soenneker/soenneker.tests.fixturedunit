@@ -100,7 +100,7 @@ public class FixturedUnitTest : UnitTest, IAsyncLifetime
             taskLength = tempTaskLength;
             valueTaskLength = tempValueTaskLength;
 
-            (int tempTaskProcessingLength, int tempValueTaskProcessingLength) = _queuedHostedService.Value.GetCountOfProcessingTasks();
+            (int tempTaskProcessingLength, int tempValueTaskProcessingLength) = await _queuedHostedService.Value.GetCountOfProcessingTasks();
             processingTaskLength = tempValueTaskProcessingLength;
             processingValueTaskLength = tempTaskProcessingLength;
 
