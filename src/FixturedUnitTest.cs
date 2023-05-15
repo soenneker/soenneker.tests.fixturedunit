@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,23 +8,20 @@ using Serilog.Extensions.Logging;
 using Serilog.Sinks.XUnit.Injectable.Abstract;
 using Soenneker.Extensions.ServiceProvider;
 using Soenneker.Fixtures.Unit;
+using Soenneker.Tests.FixturedUnit.Abstract;
 using Soenneker.Tests.Logging;
 using Soenneker.Tests.Unit;
 using Soenneker.Utils.BackgroundQueue.Abstract;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Soenneker.Tests.FixturedUnit;
 
-/// <summary>
-/// A fundamental xUnit test that stores UnitFixture and provides synthetic inversion of control. <para/>
-/// It inherits from <see cref="UnitTest"/> and it's most used function is <see cref="Resolve{T}"/> which will reach out to the Fixture and retrieve a service from DI.
-/// </summary>
-public class FixturedUnitTest : UnitTest, IAsyncLifetime
+///<inheritdoc cref="IFixturedUnitTest"/>
+public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 {
-    public UnitFixture Fixture { get; set; }
+    public UnitFixture Fixture { get; }
 
-    public AsyncServiceScope? Scope { get; set; }
+    public AsyncServiceScope? Scope { get; private set; }
 
     private readonly Lazy<IBackgroundQueue> _backgroundQueue;
     private readonly Lazy<IQueuedHostedService> _queuedHostedService;
@@ -35,10 +33,10 @@ public class FixturedUnitTest : UnitTest, IAsyncLifetime
         var outputSink = Resolve<IInjectableTestOutputSink>();
         outputSink.Inject(testOutputHelper);
         
-        _backgroundQueue = new Lazy<IBackgroundQueue>(() => Resolve<IBackgroundQueue>(), true);
-        _queuedHostedService = new Lazy<IQueuedHostedService>(() => Resolve<IQueuedHostedService>(), true);
+        _backgroundQueue = new Lazy<IBackgroundQueue>(() => Resolve<IBackgroundQueue>(), LazyThreadSafetyMode.ExecutionAndPublication);
+        _queuedHostedService = new Lazy<IQueuedHostedService>(() => Resolve<IQueuedHostedService>(), LazyThreadSafetyMode.ExecutionAndPublication);
 
-        LazyLogger = new Lazy<ILogger<LoggingTest>>(BuildLogger<FixturedUnitTest>, true);
+        LazyLogger = new Lazy<ILogger<LoggingTest>>(BuildLogger<FixturedUnitTest>, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     /// <summary>
@@ -52,10 +50,6 @@ public class FixturedUnitTest : UnitTest, IAsyncLifetime
         return logger;
     }
 
-    /// <summary>
-    /// Syntactic sugar for Factory.Services.Get();
-    /// </summary>
-    /// <remarks>Optionally, creates a scope if needed (if one doesn't already exist)</remarks>
     public T Resolve<T>(bool scoped = false)
     {
         if (Fixture.ServiceProvider == null)
@@ -70,10 +64,6 @@ public class FixturedUnitTest : UnitTest, IAsyncLifetime
         return Scope!.Value.ServiceProvider.Get<T>();
     }
 
-    /// <summary>
-    /// Needed for resolving scoped services. Don't need to worry about disposal, the end of the test handles that.
-    /// </summary>
-    /// <remarks>Usually you'll want to use <see cref="Resolve{T}"/></remarks>
     public void CreateScope()
     {
         if (Fixture.ServiceProvider == null)
@@ -82,9 +72,6 @@ public class FixturedUnitTest : UnitTest, IAsyncLifetime
         Scope = Fixture.ServiceProvider.CreateAsyncScope();
     }
     
-    /// <summary>
-    /// Checks the background queue to see if it's empty, and loops until it is
-    /// </summary>
     public async ValueTask WaitOnQueueToEmpty()
     {
         const int delayMs = 500;
