@@ -40,11 +40,11 @@
 
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 
-        <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="1.0.19" />
+        <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="1.0.21" />
 
-        <PackageReference Include="Soenneker.Fixtures.Unit" Version="1.0.24" />
+        <PackageReference Include="Soenneker.Fixtures.Unit" Version="1.0.26" />
 
-        <PackageReference Include="Soenneker.Tests.Unit" Version="1.0.53" />
+        <PackageReference Include="Soenneker.Tests.Unit" Version="1.0.56" />
 
         <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="1.0.44" />
     </ItemGroup>
