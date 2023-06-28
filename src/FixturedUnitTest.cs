@@ -83,7 +83,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
         do
         {
-            (int tempTaskLength, int tempValueTaskLength) = _backgroundQueue.Value.GetLengthsOfQueues();
+            (int tempTaskLength, int tempValueTaskLength) = await _backgroundQueue.Value.GetCountsOfChannels();
             taskLength = tempTaskLength;
             valueTaskLength = tempValueTaskLength;
 
