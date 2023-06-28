@@ -93,9 +93,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
             if (valueTaskLength > 0 || taskLength > 0 || processingValueTaskLength > 0 || processingTaskLength > 0)
             {
-                Logger.LogDebug("Waiting {delayMs}ms for Background queue to empty...", delayMs);
-
-                await Delay(delayMs, null, false);
+                await Delay(delayMs, "Background queue emptying...", false);
             }
             else
             {
