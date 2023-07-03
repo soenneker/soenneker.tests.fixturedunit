@@ -23,8 +23,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
     public AsyncServiceScope? Scope { get; private set; }
 
-    private readonly Lazy<IBackgroundQueue> _backgroundQueue;
-    private readonly Lazy<IQueuedHostedService> _queuedHostedService;
+    private readonly Lazy<IQueueInformationUtil> _queueInformationUtil;
 
     public FixturedUnitTest(UnitFixture fixture, ITestOutputHelper testOutputHelper)
     {
@@ -32,9 +31,8 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
         var outputSink = Resolve<IInjectableTestOutputSink>();
         outputSink.Inject(testOutputHelper);
-        
-        _backgroundQueue = new Lazy<IBackgroundQueue>(() => Resolve<IBackgroundQueue>(), LazyThreadSafetyMode.ExecutionAndPublication);
-        _queuedHostedService = new Lazy<IQueuedHostedService>(() => Resolve<IQueuedHostedService>(), LazyThreadSafetyMode.ExecutionAndPublication);
+
+        _queueInformationUtil = new Lazy<IQueueInformationUtil>(() => Resolve<IQueueInformationUtil>(), LazyThreadSafetyMode.ExecutionAndPublication);
 
         LazyLogger = new Lazy<ILogger<LoggingTest>>(BuildLogger<FixturedUnitTest>, LazyThreadSafetyMode.ExecutionAndPublication);
     }
@@ -71,27 +69,18 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
         Scope = Fixture.ServiceProvider.CreateAsyncScope();
     }
-    
+
     public async ValueTask WaitOnQueueToEmpty()
     {
         const int delayMs = 500;
 
-        int valueTaskLength;
-        int taskLength;
-        int processingValueTaskLength;
-        int processingTaskLength;
+        bool isProcessing;
 
         do
         {
-            (int tempTaskLength, int tempValueTaskLength) = await _backgroundQueue.Value.GetCountsOfChannels();
-            taskLength = tempTaskLength;
-            valueTaskLength = tempValueTaskLength;
+            isProcessing = await _queueInformationUtil.Value.IsProcessing();
 
-            (int tempTaskProcessingLength, int tempValueTaskProcessingLength) = await _queuedHostedService.Value.GetCountOfProcessingTasks();
-            processingTaskLength = tempValueTaskProcessingLength;
-            processingValueTaskLength = tempTaskProcessingLength;
-
-            if (valueTaskLength > 0 || taskLength > 0 || processingValueTaskLength > 0 || processingTaskLength > 0)
+            if (isProcessing)
             {
                 await Delay(delayMs, "Background queue emptying...", false);
             }
@@ -99,7 +88,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
             {
                 Logger.LogDebug("Background queue is empty; continuing");
             }
-        } while (valueTaskLength > 0 || taskLength > 0 || processingValueTaskLength > 0 || processingTaskLength > 0);
+        } while (isProcessing);
     }
 
     public Task InitializeAsync()
