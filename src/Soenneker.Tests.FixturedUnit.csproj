@@ -40,11 +40,11 @@
 
         
 
-        <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="2.1.14" />
+        <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="2.1.16" />
 
-        <PackageReference Include="Soenneker.Fixtures.Unit" Version="2.1.8" />
+        <PackageReference Include="Soenneker.Fixtures.Unit" Version="2.1.9" />
 
-        <PackageReference Include="Soenneker.Tests.Unit" Version="2.1.17" />
+        <PackageReference Include="Soenneker.Tests.Unit" Version="2.1.19" />
 
         <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="2.1.54" />
     </ItemGroup>
