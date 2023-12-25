@@ -8,5 +8,5 @@
 ## Installation
 
 ```
-Install-Package Soenneker.Tests.FixturedUnit
+dotnet add package Soenneker.Tests.FixturedUnit
 ```
