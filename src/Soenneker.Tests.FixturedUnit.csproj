@@ -46,6 +46,6 @@
 
         <PackageReference Include="Soenneker.Tests.Unit" Version="2.1.125" />
 
-        <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="2.1.462" />
+        <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="2.1.469" />
     </ItemGroup>
 </Project>
