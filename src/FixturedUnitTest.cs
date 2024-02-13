@@ -25,7 +25,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
     private readonly Lazy<IQueueInformationUtil> _queueInformationUtil;
 
-    public FixturedUnitTest(UnitFixture fixture, ITestOutputHelper testOutputHelper)
+    public FixturedUnitTest(UnitFixture fixture, ITestOutputHelper testOutputHelper) : base(testOutputHelper, fixture.AutoFaker)
     {
         Fixture = fixture;
 
