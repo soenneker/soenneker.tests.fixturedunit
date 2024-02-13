@@ -42,7 +42,7 @@
 
         <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="2.1.122" />
 
-        <PackageReference Include="Soenneker.Fixtures.Unit" Version="2.1.35" />
+        <PackageReference Include="Soenneker.Fixtures.Unit" Version="2.1.36" />
 
         <PackageReference Include="Soenneker.Tests.Unit" Version="2.1.145" />
 
