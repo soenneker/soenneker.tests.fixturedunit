@@ -44,7 +44,7 @@
 
         <PackageReference Include="Soenneker.Fixtures.Unit" Version="2.1.56" />
 
-        <PackageReference Include="Soenneker.Tests.Unit" Version="2.1.174" />
+        <PackageReference Include="Soenneker.Tests.Unit" Version="2.1.175" />
 
         <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="2.1.673" />
     </ItemGroup>
