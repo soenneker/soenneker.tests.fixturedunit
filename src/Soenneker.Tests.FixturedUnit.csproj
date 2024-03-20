@@ -36,16 +36,9 @@
         <None Include="..\README.md" Pack="true" PackagePath="\" />
         <None Include="..\LICENSE" Pack="true" PackagePath="\" />
         <None Include="..\icon.png" Pack="true" PackagePath="\" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-
-        
-
         <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="2.1.177" />
-
         <PackageReference Include="Soenneker.Fixtures.Unit" Version="2.1.78" />
-
         <PackageReference Include="Soenneker.Tests.Unit" Version="2.1.206" />
-
         <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="2.1.823" />
     </ItemGroup>
 </Project>
