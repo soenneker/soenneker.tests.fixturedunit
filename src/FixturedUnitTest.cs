@@ -78,7 +78,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
         do
         {
-            isProcessing = await _queueInformationUtil.Value.IsProcessing();
+            isProcessing = await _queueInformationUtil.Value.IsProcessing().ConfigureAwait(false);
 
             if (isProcessing)
             {
@@ -101,6 +101,6 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
         GC.SuppressFinalize(this);
 
         if (Scope != null)
-            await Scope.Value.DisposeAsync();
+            await Scope.Value.DisposeAsync().ConfigureAwait(false);
     }
 }
