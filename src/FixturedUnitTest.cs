@@ -12,7 +12,7 @@ using Soenneker.Tests.FixturedUnit.Abstract;
 using Soenneker.Tests.Logging;
 using Soenneker.Tests.Unit;
 using Soenneker.Utils.BackgroundQueue.Abstract;
-using Xunit.Abstractions;
+using Xunit;
 
 namespace Soenneker.Tests.FixturedUnit;
 
@@ -91,12 +91,12 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
         } while (isProcessing);
     }
 
-    public Task InitializeAsync()
+    public ValueTask InitializeAsync()
     {
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         GC.SuppressFinalize(this);
 

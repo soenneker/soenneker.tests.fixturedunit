@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net9.0</TargetFrameworks>
+        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <Platforms>AnyCPU</Platforms>
         <NoWarn>$(NoWarn);1591</NoWarn>
@@ -37,8 +37,8 @@
         <None Include="..\LICENSE" Pack="true" PackagePath="\" />
         <None Include="..\icon.png" Pack="true" PackagePath="\" />
         <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="3.0.257" />
-        <PackageReference Include="Soenneker.Fixtures.Unit" Version="3.0.299" />
-        <PackageReference Include="Soenneker.Tests.Unit" Version="3.0.525" />
+        <PackageReference Include="Soenneker.Fixtures.Unit" Version="3.0.300" />
+        <PackageReference Include="Soenneker.Tests.Unit" Version="3.0.528" />
         <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="3.0.1709" />
     </ItemGroup>
 </Project>
