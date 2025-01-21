@@ -36,7 +36,7 @@
         <None Include="..\README.md" Pack="true" PackagePath="\" />
         <None Include="..\LICENSE" Pack="true" PackagePath="\" />
         <None Include="..\icon.png" Pack="true" PackagePath="\" />
-        <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="3.0.270" />
+        <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="3.0.271" />
         <PackageReference Include="Soenneker.Fixtures.Unit" Version="3.0.392" />
         <PackageReference Include="Soenneker.Tests.Unit" Version="3.0.661" />
         <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="3.0.1916" />
