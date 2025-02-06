@@ -43,9 +43,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
     /// </summary>
     public static ILogger<T> BuildLogger<T>()
     {
-        ILogger<T> logger = new SerilogLoggerFactory(Log.Logger).CreateLogger<T>();
-
-        return logger;
+        return new SerilogLoggerFactory(Log.Logger).CreateLogger<T>();
     }
 
     public T Resolve<T>(bool scoped = false)
@@ -70,7 +68,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
         Scope = Fixture.ServiceProvider.CreateAsyncScope();
     }
 
-    public async ValueTask WaitOnQueueToEmpty()
+    public async ValueTask WaitOnQueueToEmpty(CancellationToken cancellationToken = default)
     {
         const int delayMs = 500;
 
@@ -78,7 +76,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
         do
         {
-            isProcessing = await _queueInformationUtil.Value.IsProcessing().ConfigureAwait(false);
+            isProcessing = await _queueInformationUtil.Value.IsProcessing(cancellationToken).ConfigureAwait(false);
 
             if (isProcessing)
             {
