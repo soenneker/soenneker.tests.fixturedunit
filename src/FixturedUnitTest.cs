@@ -23,7 +23,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
     public AsyncServiceScope? Scope { get; private set; }
 
-    private readonly Lazy<IQueueInformationUtil> _queueInformationUtil;
+    private readonly Lazy<IBackgroundQueue> _backgroundQueue;
 
     public FixturedUnitTest(UnitFixture fixture, ITestOutputHelper testOutputHelper) : base(testOutputHelper, fixture.AutoFaker)
     {
@@ -32,7 +32,7 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
         var outputSink = Resolve<IInjectableTestOutputSink>();
         outputSink.Inject(testOutputHelper);
 
-        _queueInformationUtil = new Lazy<IQueueInformationUtil>(() => Resolve<IQueueInformationUtil>(), LazyThreadSafetyMode.ExecutionAndPublication);
+        _backgroundQueue = new Lazy<IBackgroundQueue>(() => Resolve<IBackgroundQueue>(), LazyThreadSafetyMode.ExecutionAndPublication);
 
         LazyLogger = new Lazy<ILogger<LoggingTest>>(BuildLogger<FixturedUnitTest>, LazyThreadSafetyMode.ExecutionAndPublication);
     }
@@ -68,25 +68,9 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
         Scope = Fixture.ServiceProvider.CreateAsyncScope();
     }
 
-    public async ValueTask WaitOnQueueToEmpty(CancellationToken cancellationToken = default)
+    public ValueTask WaitOnQueueToEmpty(CancellationToken cancellationToken = default)
     {
-        const int delayMs = 500;
-
-        bool isProcessing;
-
-        do
-        {
-            isProcessing = await _queueInformationUtil.Value.IsProcessing(cancellationToken).ConfigureAwait(false);
-
-            if (isProcessing)
-            {
-                await Delay(delayMs, "Background queue emptying...", false);
-            }
-            else
-            {
-                Logger.LogDebug("Background queue is empty; continuing");
-            }
-        } while (isProcessing);
+        return _backgroundQueue.Value.WaitUntilEmpty(cancellationToken);
     }
 
     public ValueTask InitializeAsync()
