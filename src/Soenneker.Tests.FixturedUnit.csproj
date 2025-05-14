@@ -39,6 +39,6 @@
         <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="3.0.289" />
         <PackageReference Include="Soenneker.Fixtures.Unit" Version="3.0.494" />
         <PackageReference Include="Soenneker.Tests.Unit" Version="3.0.815" />
-        <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="3.0.2115" />
+        <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="3.0.2116" />
     </ItemGroup>
 </Project>
