@@ -18,7 +18,7 @@ using Xunit;
 namespace Soenneker.Tests.FixturedUnit;
 
 ///<inheritdoc cref="IFixturedUnitTest"/>
-public class FixturedUnitTest : UnitTest, IFixturedUnitTest
+public abstract class FixturedUnitTest : UnitTest, IFixturedUnitTest
 {
     public UnitFixture Fixture { get; }
 
@@ -74,16 +74,11 @@ public class FixturedUnitTest : UnitTest, IFixturedUnitTest
         return _backgroundQueue.Value.WaitUntilEmpty(cancellationToken);
     }
 
-    public ValueTask InitializeAsync()
+    public override async ValueTask DisposeAsync()
     {
-        return ValueTask.CompletedTask;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        GC.SuppressFinalize(this);
-
         if (Scope != null)
             await Scope.Value.DisposeAsync().NoSync();
+
+        await base.DisposeAsync().NoSync();
     }
 }
