@@ -3,8 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Extensions.Logging;
 using Serilog.Sinks.XUnit.Injectable.Abstract;
 using Soenneker.Extensions.ServiceProvider;
 using Soenneker.Extensions.ValueTask;
@@ -33,18 +31,9 @@ public abstract class FixturedUnitTest : UnitTest, IFixturedUnitTest
         var outputSink = Resolve<IInjectableTestOutputSink>();
         outputSink.Inject(testOutputHelper);
 
+        LazyLogger = new Lazy<ILogger<LoggingTest>>(() => Resolve<ILogger<FixturedUnitTest>>(scoped: true), LazyThreadSafetyMode.ExecutionAndPublication);
+
         _backgroundQueue = new Lazy<IBackgroundQueue>(() => Resolve<IBackgroundQueue>(), LazyThreadSafetyMode.ExecutionAndPublication);
-
-        LazyLogger = new Lazy<ILogger<LoggingTest>>(BuildLogger<FixturedUnitTest>, LazyThreadSafetyMode.ExecutionAndPublication);
-    }
-
-    /// <summary>
-    /// Uses the static Serilog Log.Logger, and returns Microsoft ILogger after building a new one. Avoid if you can, utilize DI!
-    /// Serilog should be configured with applicable sinks before calling this
-    /// </summary>
-    public static ILogger<T> BuildLogger<T>()
-    {
-        return new SerilogLoggerFactory(Log.Logger).CreateLogger<T>();
     }
 
     public T Resolve<T>(bool scoped = false)
@@ -77,8 +66,13 @@ public abstract class FixturedUnitTest : UnitTest, IFixturedUnitTest
     public override async ValueTask DisposeAsync()
     {
         if (Scope != null)
+        {
             await Scope.Value.DisposeAsync().NoSync();
 
-        await base.DisposeAsync().NoSync();
+            Scope = null;
+        }
+
+        await base.DisposeAsync()
+            .NoSync();
     }
 }
