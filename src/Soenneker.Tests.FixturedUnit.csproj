@@ -43,7 +43,7 @@
 
     <ItemGroup>
         <PackageReference Include="Soenneker.Extensions.ServiceProvider" Version="4.0.301" />
-        <PackageReference Include="Soenneker.Fixtures.Unit" Version="4.0.575" />
+        <PackageReference Include="Soenneker.Fixtures.Unit" Version="4.0.576" />
         <PackageReference Include="Soenneker.Tests.Unit" Version="4.0.944" />
         <PackageReference Include="Soenneker.Utils.BackgroundQueue" Version="4.0.2199" />
     </ItemGroup>
