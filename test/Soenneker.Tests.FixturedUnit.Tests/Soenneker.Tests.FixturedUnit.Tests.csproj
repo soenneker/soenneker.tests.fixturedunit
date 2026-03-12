@@ -16,7 +16,7 @@
     <PackageReference Include="xUnit.v3" Version="3.2.2" /></ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Soenneker.Tests.FixturedUnit.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.Tests.FixturedUnit\Soenneker.Tests.FixturedUnit.csproj" />
     </ItemGroup>
 
     <ItemGroup>
