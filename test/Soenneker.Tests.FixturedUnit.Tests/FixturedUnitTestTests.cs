@@ -1,10 +1,9 @@
-﻿using Xunit;
 
 namespace Soenneker.Tests.FixturedUnit.Tests;
 
 public class FixturedUnitTestTests
 {
-    [Fact]
+    [Test]
     public void Default()
     {
     }
