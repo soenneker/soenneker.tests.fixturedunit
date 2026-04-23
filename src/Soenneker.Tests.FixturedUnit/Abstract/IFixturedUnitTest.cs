@@ -1,30 +1,20 @@
-﻿using System.Threading;
-using Soenneker.Tests.Unit;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
+using Soenneker.Tests.Unit;
 
 namespace Soenneker.Tests.FixturedUnit.Abstract;
 
 /// <summary>
-/// A fundamental xUnit test that stores UnitFixture and provides synthetic inversion of control. <para/>
-/// It inherits from <see cref="UnitTest"/> and it's most used function is <see cref="Resolve{T}"/> which will reach out to the Fixture and retrieve a service from DI.
+/// A fundamental test that stores UnitFixture and provides synthetic inversion of control. <para/>
+/// It inherits from <see cref="UnitTest"/> and its most used function is <see cref="Resolve{T}"/>,
+/// which retrieves a service from the fixture service provider.
 /// </summary>
-public interface IFixturedUnitTest : IAsyncLifetime
+public interface IFixturedUnitTest : IAsyncDisposable
 {
-    /// <summary>
-    /// Syntactic sugar for Factory.Services.Get();
-    /// </summary>
-    /// <remarks>Optionally, creates a scope if needed (if one doesn't already exist)</remarks>
     T Resolve<T>(bool scoped = false);
 
-    /// <summary>
-    /// Needed for resolving scoped services. Don't need to worry about disposal, the end of the test handles that.
-    /// </summary>
-    /// <remarks>Usually you'll want to use <see cref="Resolve{T}"/></remarks>
     void CreateScope();
 
-    /// <summary>
-    /// Checks the background queue to see if it's empty, and loops until it is
-    /// </summary>
     ValueTask WaitOnQueueToEmpty(CancellationToken cancellationToken = default);
 }

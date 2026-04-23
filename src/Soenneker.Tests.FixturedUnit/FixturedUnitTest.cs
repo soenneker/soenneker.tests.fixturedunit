@@ -24,7 +24,7 @@ public abstract class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
     private readonly Lazy<IBackgroundQueue> _backgroundQueue;
 
-    public FixturedUnitTest(UnitFixture fixture, ITestOutputHelper testOutputHelper) : base(null, fixture.AutoFaker)
+    public FixturedUnitTest(UnitFixture fixture, ITestOutputHelper testOutputHelper) : base(fixture.AutoFaker)
     {
         Fixture = fixture;
 
