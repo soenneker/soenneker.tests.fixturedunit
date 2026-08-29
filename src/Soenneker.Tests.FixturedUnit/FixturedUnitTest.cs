@@ -15,7 +15,7 @@ using Xunit;
 
 namespace Soenneker.Tests.FixturedUnit;
 
-///<inheritdoc cref="IFixturedUnitTest"/>
+/// <inheritdoc cref="IFixturedUnitTest"/>
 public abstract class FixturedUnitTest : UnitTest, IFixturedUnitTest
 {
     public UnitFixture Fixture { get; }
