@@ -24,7 +24,7 @@ public abstract class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
     private readonly Lazy<IBackgroundQueue> _backgroundQueue;
 
-    public FixturedUnitTest(UnitFixture fixture, ITestOutputHelper testOutputHelper) : base(fixture.AutoFaker)
+    public FixturedUnitTest(UnitFixture fixture, ITestOutputHelper testOutputHelper) : base(fixture.AutoFaker, enableLogging: false)
     {
         Fixture = fixture;
 
@@ -52,6 +52,9 @@ public abstract class FixturedUnitTest : UnitTest, IFixturedUnitTest
 
     public void CreateScope()
     {
+        if (Scope is not null)
+            return;
+
         if (Fixture.ServiceProvider == null)
             throw new Exception("ServiceProvider was null trying create a scope!");
 

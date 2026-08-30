@@ -5,35 +5,70 @@
 
 # Soenneker.Tests.FixturedUnit
 
-A fundamental test that stores UnitFixture and provides synthetic inversion of control. It inherits from `UnitTest` and its most used function is `Resolve{T}`, which retrieves a service from the fixture service provider.
+An xUnit test base class that connects `UnitFixture` dependency injection, fake-data generators, injectable test logging, and background-queue draining.
 
-## Install
+## Installation
 
 ```bash
 dotnet add package Soenneker.Tests.FixturedUnit
 ```
 
-## Quick start
+## Fixture setup
 
 ```csharp
-using Soenneker.Tests.FixturedUnit.Abstract;
+using Microsoft.Extensions.DependencyInjection;
+using Soenneker.Fixtures.Unit;
+using Xunit;
 
-IFixturedUnitTest fixturedUnitTest = /* resolve from DI */;
-var result = fixturedUnitTest.Resolve();
+public sealed class TestFixture : UnitFixture
+{
+    public TestFixture()
+    {
+        Services.AddSingleton<IClock, TestClock>();
+        Services.AddScoped<OrderService>();
+    }
+}
+
+[CollectionDefinition("unit")]
+public sealed class UnitCollection : ICollectionFixture<TestFixture>;
 ```
 
-Resolves fixtured Unit Test.
+## Test class
 
-## What you get
+```csharp
+using Soenneker.Tests.FixturedUnit;
+using Xunit;
+using Xunit.Abstractions;
 
-- `IFixturedUnitTest` — A fundamental test that stores UnitFixture and provides synthetic inversion of control. It inherits from `UnitTest` and its most used function is `Resolve{T}`, which retrieves a service from the fixture service provider.
+[Collection("unit")]
+public sealed class OrderServiceTests : FixturedUnitTest
+{
+    public OrderServiceTests(TestFixture fixture, ITestOutputHelper output)
+        : base(fixture, output)
+    {
+    }
 
-## API at a glance
+    [Fact]
+    public async Task Creates_an_order()
+    {
+        OrderService service = Resolve<OrderService>(scoped: true);
+        CreateOrder request = AutoFaker.Generate<CreateOrder>();
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `IFixturedUnitTest.Resolve(scoped)` | Resolves fixtured Unit Test. | The resulting value. |
+        Order result = await service.Create(request);
 
-## Practical notes
+        Assert.NotEqual(Guid.Empty, result.Id);
+    }
+}
+```
 
-- Dispose instances you own when their scope ends so held resources can be released.
+The constructor binds the fixture's injectable Serilog sink to the current `ITestOutputHelper`. `Faker` and `AutoFaker` reuse the instances owned by the fixture.
+
+## Resolution and lifecycle
+
+`Resolve<T>()` resolves from the fixture's root provider. Use `Resolve<T>(scoped: true)` for scoped services; the first scoped resolution creates one async scope that is reused for the test and disposed with the test base. `CreateScope()` is idempotent while that scope exists.
+
+The fixture must have completed `InitializeAsync` before services can be resolved. Registrations belong in the fixture constructor, before its provider is built.
+
+`WaitOnQueueToEmpty(cancellationToken)` resolves the fixture's shared `IBackgroundQueue` and waits until its queued work finishes. Use a bounded cancellation token so a failed producer cannot leave a test waiting indefinitely.
+
+Because the output sink is shared by the fixture, avoid running test classes that inject different `ITestOutputHelper` instances through the same fixture concurrently; the most recent injection controls where fixture logs are written.
